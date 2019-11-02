@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--namespace扫描接口-->
+<mapper namespace="com.mage.crm.dao.ModuleDao">
+    <select id="queryAllsModuleDtos"  resultType="moduleDto">
+        select id,module_name as name,parent_id as pid from t_module where is_valid=1
+    </select>
+
+    <select id="queryModuleById" parameterType="int" resultType="module">
+        select id,opt_value optValue from t_module where id=#{moduleId}
+    </select>
+    <select id="queryModulesByParams" parameterType="moduleQuery" resultType="module">
+        SELECT
+        m1.id,
+        m1.parent_id AS parentId,
+        m1.module_name AS moduleName,
+        m2.module_name AS parentModuleName,
+        m1.module_style AS moduleStyle,
+        m1.opt_value AS optValue,
+        m1.url,
+        m1.grade,
+        m1.create_date AS createDate,
+        m1.update_date AS updateDate
+        FROM
+        t_module m1
+        LEFT JOIN t_module m2 ON m1.parent_id = m2.id
+        <where>
+            m1.is_valid=1
+            <if test="moduleName!=null and moduleName!=''">
+                AND m1.module_name LIKE concat('%',#{moduleName},'%')
+            </if>
+            <if test="optValue!=null and optValue!=''">
+                AND m1.opt_value LIKE concat('%',#{optValue},'%')
+            </if>
+            <if test="parentModuleName!=null and parentModuleName!=''">
+                AND m2.module_name LIKE concat('%',#{parentModuleName},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="queryModulesByGrade" resultType="module" parameterType="int">
+        select id,module_name as moduleName from t_module where is_valid=1 and grade=#{grade}
+    </select>
+
+    <select id="queryModuleByGradeAndModuleName" resultType="module">
+        select module_name as moduleName from t_module where is_valid=1 and grade=1
+    </select>
+
+    <select id="queryModuleByOptValue" resultType="module" parameterType="string">
+        select opt_value as optValue from t_module where is_valid=1 and opt_value=#{optValue}
+    </select>
+
+    <select id="queryModuleByPid" parameterType="int" resultType="module">
+        select id,module_name as moduleName,url,opt_value as optValue from t_module where id=#{pid} and is_valid=1
+    </select>
+
+    <insert id="insert" parameterType="module">
+        insert into t_module(module_name,module_style,url,opt_value,parent_id,grade,orders,is_valid,create_date,update_date)
+        values(#{moduleName},#{moduleStyle},#{url},#{optValue},#{parentId},#{grade},#{orders},#{isValid},#{createDate},#{updateDate}
+    </insert>
+</mapper>

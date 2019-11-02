@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--namespace扫描接口-->
+<mapper namespace="com.mage.crm.dao.PermissionDao">
+    <select id="queryPermissionDaoByRid" parameterType="int" resultType="permission">
+        select module_id from t_permission where role_id=#{rid}
+    </select>
+
+    <delete id="deletePermissionDaoByRid" parameterType="int">
+        delete from t_permission where role_id=#{rid}
+    </delete>
+
+    <insert id="insertBatch" parameterType="list" >
+        insert into t_permission(role_id, module_id, acl_value, create_date, update_date)
+        values 
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId},#{item.moduleId},#{item.aclValue},#{item.createDate},#{item.updateDate})
+        </foreach>
+    </insert>
+
+    <select id="queryPermissionModuleIdsByRid" parameterType="int" resultType="int">
+        select module_id from t_permission where role_id=#{rid}
+    </select>
+</mapper>

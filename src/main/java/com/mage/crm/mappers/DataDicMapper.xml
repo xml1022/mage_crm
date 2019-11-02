@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--namespace扫描接口-->
+<mapper namespace="com.mage.crm.dao.DataDicDao">
+    <select id="queryDataDicValueByDataDicName" parameterType="string" resultType="dataDic">
+        select data_dic_value as dataDicValue from t_dataDic where data_dic_name=#{dataDicName} and is_valid=1
+    </select>
+</mapper>
